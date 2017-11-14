@@ -1,0 +1,28 @@
+<div align="right" class="tituloBlanco" >
+		<a href="/login">Iniciar sesión</a>
+</div>
+<div class="jumbotron text-center fondoNegro">
+
+	<h1 style ="color: #ffffff" class = "tituloBlanco">¡Bienvenido a Instafix!</h1>
+
+	<div ng-if="!main.loggedIn">
+		<p  class = "tituloBlanco">Ingrese a Instafix para hacer billete.</p>
+		<div class ="row col-md-12">
+			<img src="../../assets/img/logo.png" width="150" height="150"  align = "center">
+		</div>
+		<div class = "row  col-md-12" style="height:50px;">
+		</div>
+
+		<div class = "row  col-md-12">
+			<div class="button-8">
+				<div class="eff-8"></div>
+				<a href="/signUp"> <font class = "titulo" size ="5">Unirse</font></a>
+			</div>
+		</div>
+	</div>
+
+	<div ng-if="main.loggedIn">
+		<p class = titulo>Pormovemos las buenas prácticas</p>
+		<a href="/inicio" class="btn btn-primary">Ingresar</a>
+	</div>
+</div>
