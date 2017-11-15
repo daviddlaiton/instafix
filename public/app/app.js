@@ -4,7 +4,11 @@
  	'authService',
  	'mainCtrl',
  	'userCtrl',
- 	'userService'
+ 	'userService',
+  'servicioCtrl',
+  'servicioService',
+  'fixerCtrl',
+  'referenciaCtrl'
  	])
  // application configuration to integrate token into requests
  .config(function($httpProvider) {

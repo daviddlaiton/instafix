@@ -1,13 +1,11 @@
-angular.module('mainCtrl', [])
+angular.module('mainCtrl', ['ngFileUpload'])
 
-.controller('mainController', function($rootScope, $location, Auth, User) {
+.controller('mainController', function(Upload,$rootScope, $location, Auth, User) {
 
   var vm = this;
-
   // get info if a person is logged in
   vm.loggedIn = Auth.isLoggedIn();
   vm.ofertante = Auth.esOfertante();
-
   // check to see if a user is logged in on every request
   $rootScope.$on('$routeChangeStart', function() {
     vm.loggedIn = Auth.isLoggedIn();
@@ -18,7 +16,7 @@ angular.module('mainCtrl', [])
     Auth.getUser()
     .then(function(data) {
       vm.user = data.data;
-    });
+      });
   });
 
   // function to handle login form
@@ -35,8 +33,6 @@ angular.module('mainCtrl', [])
       // if a user successfully logs in, redirect to users page
       if (data.data.success){
         $location.path('/inicio');
-        $location.path('/inicio');
-
       }
       else
       {
@@ -47,23 +43,33 @@ angular.module('mainCtrl', [])
   // doSignUp to handle signUp form
   vm.doSignUp= function() {
     vm.processing = true;
+
+    console.log("entro");
     // call the Auth.login() function
-
     if(vm.signUpData){
-      Auth.signUp(vm.signUpData.name,vm.signUpData.username, vm.signUpData.password,vm.signUpData.ofertante)
 
-      .then(function(data) {
-        vm.processing = false;
-        // if a user successfully logs in, redirect to users page
-        if (data.data.success){
-          $location.path('/inicio');
-        }
-        else
-        {
-          vm.error = data.data.message;
-        }
-      });
+      if(vm.signUpData.perfil){
+        Upload.upload({
+          url: '/api/fixer/subirFotoPerfil', //webAPI exposed to upload the file
+          data:{foto:vm.signUpData.perfil} //pass file as data, should be user ng-model
+        }).then(function (resp) { //upload function returns a promise
+          if(resp.data.error_code === 0){ //validate success
+            Auth.signUp(vm.signUpData.name,vm.signUpData.username, vm.signUpData.password,vm.signUpData.ofertante,resp.data.route)
+            .then(function(data) {
+              vm.processing = false;
+              // if a user successfully logs in, redirect to users page
+              if (data.data.success){
+                $location.path('/inicio');
+              }
+              else
+              {
+                vm.error = data.data.message;
+              }
+            });
+          }
 
+        })
+      }
     }
     else    vm.error = "Llene los campos";
 

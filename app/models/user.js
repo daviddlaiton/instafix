@@ -1,23 +1,29 @@
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose'); // for working w/ our database
 var Schema = mongoose.Schema;
-
+var ServicioSchema = require('./servicio')
 
 var UserSchema = new Schema({
 name: String,
-username: { type: String, required: true, index: { unique: true }},
-password: { type: String, required: true, select: false },
+username: { type: String, required: false, index: { unique: true }},
+password: { type: String, required: false, select: false },
 ofertante:  Boolean,
-imagen: String //pilas
+alba:Boolean,
+carp:Boolean,
+elec:Boolean,
+jard:Boolean,
+pint:Boolean,
+plom:Boolean,
+ciudad: String,
+descripcion: String,
+direccion: String,
+perfil: String,
+telefono: String,
+trabajos: [String],
+estrellas: Number,
+votos: Number
  });
- // user schema
- var ServicioSchema = new Schema({
- tipo: { type: String, required: true, select: true },  //Limpieza, mantenimiento...
- estado: { type: String, required: true, select: true }, //Activo, terminado, en espera de confirmacion
- lugar: { type: String, required: true, select: true },   // Dirección
- cliente: UserSchema,
- ofertante: UserSchema
- });
+
  // hash the password before the user is saved
  UserSchema.pre('save', function(next) {
  var user = this;
@@ -38,4 +44,4 @@ return bcrypt.compareSync(password, user.password);
 };
 
  // return the model
-module.exports = mongoose.model('User', UserSchema);
+module.exports = UserSchema;//mongoose.model('User', UserSchema);

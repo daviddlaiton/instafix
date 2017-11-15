@@ -6,7 +6,9 @@ angular.module('app.routes', ['ngRoute'])
 
 	// home page route
 	.when('/', {
-		templateUrl : 'app/views/pages/home.html'
+		templateUrl : 'app/views/pages/home.html',
+		controller : 'mainController',
+		controllerAs: 'main'
 	})
 	// login page
 	.when('/login', {
@@ -24,35 +26,71 @@ angular.module('app.routes', ['ngRoute'])
 		controller: 'mainController',
 		controllerAs: 'main'
 	})
-	.when('/nuevoServicio', {
+	.when('/nuevo-servicio', {
 		templateUrl: 'app/views/pages/nuevoServicio.html',
+		controller: 'servicioController',
+		controllerAs: 'main'
+	})
+	.when('/nuevo-servicio/detalle', {
+		templateUrl: 'app/views/pages/nuevoServicioDetalle.html',
+		controller: 'servicioController',
+		controllerAs: 'up'
+	})
+	.when('/nuevo-servicio/fixers', {
+		templateUrl: 'app/views/pages/fixers.html',
+		controller: 'servicioController',
+		controllerAs: 'main'
+	})
+	.when('/serviciosDemandante', {
+		templateUrl: 'app/views/pages/servicios/serviciosDemandante.html',
 		controller: 'mainController',
 		controllerAs: 'main'
 	})
-	.when('/nuevoServicio/albanileria', {
-		templateUrl: 'app/views/pages/servicios/albanileria.html',
+	.when('/serviciosOfertante', {
+		templateUrl: 'app/views/pages/servicios/serviciosOfertante.html',
 		controller: 'mainController',
 		controllerAs: 'main'
-	})	.when('/nuevoServicio/albanileria/confirmacion', {
-			templateUrl: 'app/views/pages/ofertante/perfilOfertante.html',
-			controller: 'mainController',
-			controllerAs: 'main'
-		})
-		.when('/construccion', {
-			templateUrl: 'app/views/pages/ofertante/construccion.html',
-			controller: 'mainController',
-			controllerAs: 'main'
-		})
-		.when('/serviciosDemandante', {
-			templateUrl: 'app/views/pages/servicios/serviciosDemandante.html',
-			controller: 'mainController',
-			controllerAs: 'main'
-		})
-		.when('/serviciosOfertante', {
-			templateUrl: 'app/views/pages/servicios/serviciosOfertante.html',
-			controller: 'mainController',
-			controllerAs: 'main'
-		});
+	})
+	.when('/nuevo-fixer', {
+		templateUrl: 'app/views/pages/nuevoFixer.html',
+		controller: 'fixerController',
+		controllerAs: 'main'
+	})
+	.when('/nuevo-fixer/detalle', {
+		templateUrl: 'app/views/pages/nuevoFixerDetalle.html',
+		controller: 'fixerController',
+		controllerAs: 'up'
+	})
+	.when('/fixers/:fixer_id', {
+		templateUrl: 'app/views/pages/fixerSingle.html',
+		controller: 'servicioController',
+		controllerAs: 'main',
+		resolve: {
+			 currentFixer: ['$route','$http', function($route,$http) {
+					 return $http.get('/api/users/' + $route.current.params.fixer_id);
+			 }]
+		 }
+	})
+	.when('/referenciarFixer', {
+		templateUrl: 'app/views/pages/fixersR.html',
+		controller: 'referenciaController',
+		controllerAs: 'main'
+	})
+	.when('/escribir-referencia/:fixer_id', {
+		templateUrl: 'app/views/pages/referencia.html',
+		controller: 'referenciaController',
+		controllerAs: 'main',
+		resolve: {
+			 currentFixer: ['$route','$http', function($route,$http) {
+					 return $http.get('/api/users/' + $route.current.params.fixer_id);
+			 }]
+		 }
+	})
+
+
+
+
+	;
 	// get rid of the hash in the URL
 	$locationProvider.html5Mode(true);
 
