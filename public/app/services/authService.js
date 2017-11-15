@@ -24,14 +24,15 @@ angular.module('authService', [])
 			return data;
 		});
 	};
-	authFactory.signUp = function(name,username, password,ofertante) {
+	authFactory.signUp = function(name,username, password,ofertante,perfil) {
 
 		// return the promise object and its data
 		return $http.post('/api/users', {
 			name: name,
 			username: username,
 			password: password,
-			ofertante:ofertante
+			ofertante:ofertante,
+			perfil:perfil
 		})
 		.then(function(dato) {
 			if(dato.data.success){
@@ -116,7 +117,6 @@ angular.module('authService', [])
 		else{
 			$window.localStorage.removeItem('token');
 			$window.localStorage.removeItem('ofertante');
-
 		}
 	};
 
