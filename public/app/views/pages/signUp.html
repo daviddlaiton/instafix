@@ -1,0 +1,46 @@
+<div align="right" class="tituloBlanco" >
+	<a href="/login">Iniciar sesión</a>
+</div>
+<div class="row col-sm-6 col-sm-offset-3 ">
+
+	<div class="jumbotron centrado fondoNegro"ng-if="!main.loggedIn">
+		<h1 style ="color: #ffffff" class = "tituloBlanco">Unirse a Instafix</h1>
+
+		<form ng-submit="main.doSignUp()">
+			<div class="form-group">
+				<label class = "tituloBlanco"><font size ="4">Nombre</font></label>
+				<input type="text" class="form-control tituloBlanco"	ng-model="main.signUpData.name">
+			</div>
+
+			<!-- USERNAME INPUT -->
+			<div class="form-group w">
+				<label class = "tituloBlanco"><font size ="4">Usuario</font></label>
+				<input type="text" class="form-control tituloBlanco"	ng-model="main.signUpData.username">
+			</div>
+
+			<!-- PASSWORD INPUT -->
+			<div class="form-group">
+				<label class = "tituloBlanco"><font size ="4">Contraseña</font></label>
+				<input type="password" class="form-control" ng-model="main.signUpData.password">
+			</div>
+			<input type="checkbox" id="c1" name="cc"ng-model="main.signUpData.ofertante" />
+			<label for="c1"><span></span>Quiero usar Instafix para ofrecer mis servicios</label>
+			<p>
+
+
+				<div style="color:red" ng-if="main.error">
+					{{ main.error }}
+				</div>
+				<!-- LOGIN BUTTON -->
+				<button type="submit" class="btn btn-block botonCaja" >
+					<span ng-if="!main.processing"  >Ingresar</span>
+					<span ng-if="main.processing" class="spinner">
+						<span class="glyphicon glyphico n-repeat"></span>
+					</span>
+				</button>
+
+			</form>
+
+		</div>
+
+	</div>
