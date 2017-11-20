@@ -1,4 +1,14 @@
-<div  class="row"  >
+
+
+<div  class="row"  ng-if="main.processing">
+
+	<div align="center" class="col-md-12" >
+			<div  class="loader" align ="center"></div>
+</div>
+
+</div>
+
+<div  class="row"  ng-if="!main.processing">
 	<div align="left" class="tituloBlanco col-md-6" ng-if="!main.loggedIn" >
 		<a href="/nuevo-fixer">¿Quieres ser Fixer? ¡Trabaja con nosotros! </a>
 	</div>
@@ -7,7 +17,7 @@
 	</div>
 
 </div>
-<div class="row col-sm-6 col-sm-offset-3 ">
+<div class="row col-sm-6 col-sm-offset-3 " ng-if="!main.processing">
 
 	<div class="jumbotron centrado fondoNegro"ng-if="!main.loggedIn">
 		<h1 style ="color: #ffffff" class = "tituloBlanco">Únete a Instafix </h1>
@@ -23,7 +33,8 @@
 				<label class = "tituloBlanco"><font size ="4">Usuario</font></label>
 				<input type="text" class="form-control tituloBlanco"	ng-model="main.signUpData.username">
 			</div>
-
+			<form>
+			</form>
 			<!-- PASSWORD INPUT -->
 			<div class="form-group">
 				<label class = "tituloBlanco"><font size ="4">Contraseña</font></label>
@@ -32,36 +43,40 @@
 			<p>
 				<div class="form-group">
 
-				<label style="font-size: 4" align="left" class="tituloBlanco">
-					Foto de perfil
-				</label>
-			</div>
-			<input
-			type="file"
-			ngf-select
-			ng-model="main.signUpData.perfil"
-			name="perfil"
-			ngf-pattern="'image/*'"
-			accept="image/*"
-			accept="image/*"
-			ngf-max-size="20MB"
-			style="padding-top: 0px; color: white"
-			/>
+					<label style="font-size: 4" align="left" class="tituloBlanco">
+						Foto de perfil
+					</label>
+				</div>
+				<div class="form-group">
+					<input
+					type="file"
+					ngf-select
+					ng-model="main.signUpData.perfil"
+					name="perfil"
+					ngf-pattern="'image/*'"
+					accept="image/*"
+					accept="image/*"
+					ngf-max-size="20MB"
+					style="padding-top: 0px; color: white"
+					/>
+				</div>
+
+
+				<div style="color:red" ng-if="main.error">
+					{{ main.error }}
+				</div>
+				<div ng-if="main.processing">
+					<button type="submit" class="btn btn-block botonCaja" ng-click="main.doSignUp()" ng-if="!main.processing" >
+						<span  >Ingresar</span>
+					</button>
+				</div>
+
+				<button type="submit" class="btn btn-block botonCaja" ng-click="main.doSignUp()" ng-if="!main.processing" >
+					<span  >Ingresar</span>
+				</button>
+
+
+			</form>
 		</div>
 
-			<div style="color:red" ng-if="main.error">
-				{{ main.error }}
-			</div>
-			<!-- LOGIN BUTTON -->
-			<button type="submit" class="btn btn-block botonCaja" ng-click="main.doSignUp()">
-				<span ng-if="!main.processing"  >Ingresar</span>
-				<span ng-if="main.processing" class="spinner">
-					<span class="glyphicon glyphico n-repeat"></span>
-				</span>
-			</button>
-
-		</form>
-
 	</div>
-
-</div>

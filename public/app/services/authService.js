@@ -24,21 +24,15 @@ angular.module('authService', [])
 			return data;
 		});
 	};
-	authFactory.signUp = function(name,username, password,ofertante,perfil) {
+	authFactory.signUp = function(user) {
 
 		// return the promise object and its data
-		return $http.post('/api/users', {
-			name: name,
-			username: username,
-			password: password,
-			ofertante:ofertante,
-			perfil:perfil
-		})
+		return $http.post('/api/users', user)
 		.then(function(dato) {
 			if(dato.data.success){
 				return $http.post('/api/authenticate', {
-					username: username,
-					password: password
+					username: user.username,
+					password:user.password
 				})
 				.then(function(data) {
 					AuthToken.setToken(data.data.token,data.data.ofertante);
@@ -115,8 +109,13 @@ angular.module('authService', [])
 			}
 		}
 		else{
+			$window.localStorage.removeItem('servicioTerminado');
 			$window.localStorage.removeItem('token');
 			$window.localStorage.removeItem('ofertante');
+			$window.localStorage.removeItem('fixers');
+			$window.localStorage.removeItem('fixerData');
+			$window.localStorage.removeItem('servicioData');
+			$window.localStorage.removeItem('servicioId');
 		}
 	};
 

@@ -1,12 +1,18 @@
+<div  class="row"  ng-if="main.processing">
 
+  <div align="center" class="col-md-12" >
+    <div  class="loader" align ="center"></div>
+  </div>
+
+</div>
 <div class = "row" style="height:50px;">
 </div>
-<div class=" row titulo" style="font-size: 50px; color: white;   border-bottom:5px solid #8e0b0b;" align="center">
+<div class=" row titulo" style="font-size: 50px; color: white;   border-bottom:5px solid #8e0b0b;" align="center"  ng-if="!main.processing">
   ¿Qué servicios ofreces?
 </div>
-<form ng-submit="main.seleccionarServiciosFixer()">
+<form ng-submit="main.seleccionarServiciosFixer()" ng-if="!main.processing">
 
-  <div class = "row" style="height:150px;">
+  <div class = "row" style="height:150px;" >
   </div>
   <div class = "row">
     <div class = "col-md-9 frame" style="background:url(../../assets/img/corcho.png) no-repeat">
@@ -74,12 +80,23 @@
   </div>
   <div class = "row" style="height:50px;">
   </div>
+  <div class = "row" >
+
+  </div>
   <div class = "row">
+    <div class = "col-md-9">
+      <div style="color:red" ng-if="main.error" align ='center'>
+        {{ main.error }}
+      </div>
+    </div>
+  </div>
+
+  <div class = "row" >
 
     <div class = "col-md-9">
       <div class = "tituloBlanco" align="center">
-        <button type="submit"  class = "boton-cool" style="  font-size:20px; border-top:transparent;border-left-color:transparent;border-right-color:transparent">
-          Listo
+        <button type="submit" class="btn btn-block botonCaja"  style="width : 20%"ng-if="!main.processing">
+          <span  >Listo</span>
         </button>
       </div>
     </div>
@@ -89,5 +106,3 @@
 
 <div class = "row" style="height:40px;">
 </div>
-
-a

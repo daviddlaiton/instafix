@@ -1,25 +1,75 @@
+
+
+
+
+
 <div class="col-md-4">
 
 </div>
 <div class="col-md-5">
+  <div class="row">
+    <label class = "tituloBlanco"><font size ="4">{{main.user.name}}, por favor califica a {{main.servicio.ofertante.name}}</font></label>
+
+  </div>
 
 <form name="main.upload_form">
 
 <div class="form-group">
-  <label class = "tituloBlanco"><font size ="4">Calificación</font></label>
-  <input type="text" class="form-control tituloBlanco"	ng-model="main.referencia.estrellas">
+  <div class="row">
+    <label class = "tituloBlanco"><font size ="4">Calificación</font></label>
+
+  </div>
+  <div class="row">
+
+  <fieldset class="rating">
+      <input type="radio" ng-model ='main.referencia.estrella'ng-value = '5'id="star5" name="rating" value="5" /><label class = "full" for="star5" title="Excelente - 5 estrellas" ></label>
+      <input type="radio" ng-model ='main.referencia.estrella'ng-value = '4'id="star4" name="rating" value="4" /><label class = "full" for="star4" title="Bueno - 4 estrellas" ></label>
+      <input type="radio" ng-model ='main.referencia.estrella'ng-value = '3'id="star3" name="rating" value="3" /><label class = "full" for="star3" title="Regular - 3 estrellas"></label>
+      <input type="radio"ng-model ='main.referencia.estrella'ng-value = '2' id="star2" name="rating" value="2" /><label class = "full" for="star2" title="Malo - 2 estrellas"></label>
+      <input type="radio"ng-model ='main.referencia.estrella'ng-value = '1' id="star1" name="rating" value="1" /><label class = "full" for="star1" title="Pésimo - 1 estrella"></label>
+  </fieldset>
+</div>
 </div>
 
 <!-- USERNAME INPUT -->
 <div class="form-group w">
-  <label class = "tituloBlanco"><font size ="4">Comentario</font></label>
-  <textarea name="Text1" id="descripcion" cols="60" rows="5" placeholder="Describa brevemente su experienca con el fixer" ng-model="main.referencia.texto"></textarea>
+  <div class="row">
+    <label class = "tituloBlanco"><font size ="4">Comentario</font></label>
+    <textarea name="Text1" id="descripcion" cols="60" rows="5" placeholder="Describa brevemente su experienca con el fixer" ng-model="main.referencia.texto"></textarea>
+  </div>
 </div>
-<button type="submit" class="btn btn-block botonCaja" ng-click="main.enviar()">
+<div class="row">
+  <label class = "tituloBlanco"><font size ="4">Fotos de los resultados</font></label>
+  <input
+  type="file"
+  ngf-select
+  multiple
+  ng-model="main.fotos"
+  name="files"
+  ngf-pattern="'image/*'"
+  accept="image/*"
+  accept="image/*"
+  ngf-max-size="20MB"
+  style=" color: white"
+  />
+</div>
+<div class = "row" style="height:50px;">
+</div>
+
+<div style="color:red" ng-if="main.error" align ='center'>
+  {{ main.error }}
+</div>
+
+<button type="submit" class="btn btn-block botonCaja" ng-click="main.enviar()" ng-if="!main.processing">
   <span ng-if="!main.processing"  >Enviar</span>
   <span ng-if="main.processing" class="spinner">
     <span class="glyphicon glyphico n-repeat"></span>
   </span>
 </button>
+<div  class="row"  ng-if="main.processing">
+  <div align="center" class="col-md-12" >
+    <div  class="loader" align ="center"></div>
+  </div>
+</div>
 </form>
 </div>

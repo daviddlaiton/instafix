@@ -33,6 +33,8 @@ mongoose.connect(config.database);
 // set static files location
 // used for requests that our frontend will make
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser({limit: '1000mb'}));
+app.use(bodyParser.urlencoded({limit: '1000mb'}));
 
 // ROUTES FOR OUR API =================
 // ====================================

@@ -1,9 +1,17 @@
-<div class=" row titulo" style="font-size: 50px; color: white;   border-bottom:5px solid #8e0b0b;" align="center">
+<div  class="row"  ng-if="up.processing">
+
+  <div align="center" class="col-md-12" >
+    <div  class="loader" align ="center"></div>
+  </div>
+
+</div>
+
+<div class=" row titulo" style="font-size: 50px; color: white;   border-bottom:5px solid #8e0b0b;" align="center" ng-if="!up.processing">
   Construye tu perfil
 </div>
 <div class = "row" style="height:50px;">
 </div>
-<form name="up.upload_form">
+<form name="up.upload_form" ng-if="!up.processing">
 
 <div class="row">
   <div class="col-md-2">
@@ -61,16 +69,23 @@
 
   <div class="col-md-4">
     <select ng-model="up.fixerData.ciudad">
-      <option value="bogota">Bogotá</option>
-      <option value="cali">Cali</option>
-      <option value="barranquilla">Barranquilla</option>
-      <option value="chia">Chía</option>
+      <option value="Bogota">Bogotá</option>
+      <option value="Cali">Cali</option>
+      <option value="Barranquilla">Barranquilla</option>
+      <option value="Chia">Chía</option>
     </select>
   </div>
   <div class="col-md-2">
 
   </div>
   <div class="col-md-3">
+    <div class = "row">
+      <div class = "col-md-9">
+        <div style="color:red" ng-if="up.error" align ='center'>
+          {{ up.error }}
+        </div>
+      </div>
+    </div>
     <button type="submit" class="btn btn-premier botonCaja  col-sm-4" style="text-align:center; width:250px"  ng-click="up.nuevoFixer()">
       <span  >Enviar</span>
     </button>

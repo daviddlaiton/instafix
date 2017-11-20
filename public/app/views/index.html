@@ -14,21 +14,23 @@
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.1/paper/bootstrap.min.css">
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css">
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
 
 
 	<link rel="stylesheet" href="assets/css/style.css">
 
 	<!-- JS -->
 	<!-- load angular and angular-route via CDN -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-route.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-animate.js"></script>
 
-
+	<script src="assets/libs/angular/angular.min.js"></script>
+	<script src="assets/libs/angular-route/angular-route.min.js"></script>
+	<script src="assets/libs/angular-animate/angular-animate.min.js"></script>
 	<!-- Dependencias para poder subir archivos -->
 
-	<script src="/../../node_modules/ng-file-upload-shim.min.js"></script>
-	<script src="/../../node_modules/ng-file-upload.min.js"></script>
+	<script src="assets/libs/ng-file-upload/ng-file-upload-shim.min.js"></script>
+	<script src="assets/libs/ng-file-upload/ng-file-upload.min.js"></script>
+	<script src="assets/libs/angular-base64-upload/dist/angular-base64-upload.js"></script>
+	<script src="assets/libs/angular-base64-upload/dist/angular-base64-upload.min.js"></script>
 
 
 	<!-- controllers -->
@@ -37,11 +39,14 @@
 	<script src="app/controllers/servicioCtrl.js"></script>
 	<script src="app/controllers/fixerCtrl.js"></script>
 	<script src="app/controllers/referenciaCtrl.js"></script>
+	<script src="app/controllers/servicioActivoCtrl.js"></script>
+
 
 	<!-- services -->
 	<script src="app/services/authService.js"></script>
 	<script src="app/services/userService.js"></script>
 	<script src="app/services/servicioService.js"></script>
+	<script src="app/services/imagePostService.js"></script>
 
 	<!-- main Angular app files -->
 	<script src="app/app.routes.js"></script>
@@ -54,15 +59,32 @@
 	<header ng-if="main.loggedIn">
 		<div class="navbar navbar-inverse" >
 			<div class="container">
+
+
+
 				<div class="navbar-header navbar-center tituloInstafix">
 					<a href="/inicio">I n s t a f i x <img src="../../assets/img/logo.png" width="60" height="60"> </a>
 				</div>
 
+				<ul class="nav navbar-nav navbar-left">
+					<li ng-if="!main.cantMensajes && !main.ofertante"> <span class="glyphicon glyphicon-heart	" style ="color: white; padding-top:150%; font-size: 120%;" title="No te han respondido ninguna nueva solicitud" ></span></li>
+					<li ng-if="main.cantMensajes && !main.ofertante"> <a href="/servicios-en-espera/"><span class="glyphicon glyphicon-heart " style ="color: white; padding-top:0%; font-size: 120%; "title="¡Te han respondido una solicitud!"></span></a></li>
+					<li  ng-if ="main.cantMensajes && !main.ofertante"><div class="numberCircle">{{main.cantMensajes}}</div></li>
+					<li><a class ="glyphicon glyphicon-wrench"  style ="color:black"></a></li>
+					<li ng-if="!main.cantFixes && main.ofertante"> <span class="glyphicon glyphicon-wrench " style ="color: white; padding-top:150%; font-size: 120%; "title="No tienes nuevas ofertas"></span></li>
+					<li ng-if="main.cantFixes && main.ofertante"> <a href ="/servicios-en-espera/"><span class="glyphicon glyphicon-wrench " style ="color: white;  font-size: 120%; "title="¡Tienes nuevas ofertas!"></span></a> </li>
+					<li  ng-if ="main.cantFixes && main.ofertante"><div class="numberCircle">{{main.cantFixes}}</div></li>
+					<li><a class ="glyphicon glyphicon-wrench"  style ="color:black"></a></li>
+					<li ng-if="!main.cantActivos"> <span class="glyphicon glyphicon-fire " style ="color: white; padding-top:150%; font-size: 120%; "title="No tienes servicios activos"></span></li>
+					<li ng-if="main.cantActivos "> <a href ="/servicios-activos/"><span class="glyphicon glyphicon-fire " style ="color: white;  font-size: 120%; "title="Ir a servicios activos"></span></a> </li>
+					<li  ng-if ="main.cantActivos"><div class="numberCircle">{{main.cantActivos}}</div></li>
+				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li	><img src="{{main.user.perfil}}" width="60" height="60"></li>
-					<li ng-if="main.loggedIn" class="tituloBlanco" ><a>Hola {{ main.user.name }}</a></li>
-					<li ng-if="main.loggedIn"  class ="tituloBlanco"><a href="/users">Mi cuenta</a></li>
-					<li ng-if="main.loggedIn" class ="tituloBlanco"><a href="/" ng-click="main.doLogout()">Salir</a></li>
+
+					<li	><img  alt="Imagen" src="{{main.user.perfil}}" width="60" height="60" class = "img-circle"></li>
+					<li  class="tituloBlanco" ><a>Hola {{ main.user.name }}</a></li>
+					<li  ng-if="main.ofertante" class ="tituloBlanco"><a  ng-href="/fixers/{{ main.user._id }}">Mi cuenta</a></li>
+					<li class ="tituloBlanco"><a href="/" ng-click="main.doLogout()">Salir</a></li>
 
 				</ul>
 			</div>

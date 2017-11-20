@@ -1,0 +1,42 @@
+<div class=" row tituloBlanco" style="font-size: 50px; color: white; " align="center" ng-if="!( serviciosActivos.length > 0)">
+  No tienes servicios activos
+</div>
+<div class=" row tituloBlanco" style="font-size: 50px; color: white;   border-bottom:5px solid #8e0b0b;" align="center" ng-if="(serviciosActivos.length >  0)">
+  Servicios activos
+</div>
+<div class = "row" style="height:80px;" ng-if="(serviciosActivos.length > 0 )">
+</div>
+<div  class="row" ng-if="(serviciosActivos.length > 0 )">
+  <div class = "col-md-2">
+
+  </div>
+  <div  class="col-md-8">
+
+    <table style="width:100%" align = "center">
+      <thead>
+        <tr>
+          <th class="tituloBlanco"style = "text-align:center; font-size:25px">Ciudad</th>
+          <th class="tituloBlanco"style = "text-align:center; font-size:25px">Direccion</th>
+          <th class="tituloBlanco"style = "text-align:center; font-size:25px">Muestra</th>
+          <th ng-if="!main.ofertante"class="tituloBlanco"style = "text-align:center; font-size:25px">Fixer</th>
+          <th ng-if="main.ofertante"class="tituloBlanco"style = "text-align:center; font-size:25px">Cliente</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat= "servicio in serviciosActivos" >
+          <td class="tituloBlanco"><a style = "text-align:center; font-size:20px" ng-href="/detalle-servicio/{{ servicio._id }}">{{servicio.ciudad}}</a></td>
+          <td class="tituloBlanco"><a style = "text-align:center; font-size:20px" ng-href="/detalle-servicio/{{ servicio._id }}">{{servicio.direccion}}</a></td>
+          <td style = "text-align:center">
+            <a ng-href="/detalle-servicio/{{ servicio._id }}">
+              <img style="width:150px;height:150px; max-width:100%;max.height:100%;text-align:center"class="img-circle" ng-src="{{servicio.trabajos[0]}}" alt="{{servicio.direccion}}" />
+            </a>
+          </td>
+          <td class="tituloBlanco"ng-if="!main.ofertante"><a style = "text-align:center; font-size:20px" ng-href="/detalle-servicio/{{ servicio._id }}">{{servicio.ofertante.name}}</a></td>
+          <td class="tituloBlanco"ng-if="main.ofertante"><a style = "text-align:center; font-size:20px" ng-href="/detalle-servicio/{{ servicio._id }}">{{servicio.cliente.name}}</a></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>

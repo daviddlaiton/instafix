@@ -1,7 +1,7 @@
-<div class=" row titulo" style="font-size: 50px; color: white; " align="center" ng-if = "main.hayFixers()">
+<div class=" row titulo" style="font-size: 50px; color: white; " align="center" ng-if = "main.hayFixers">
   Escoge a tu Fixer
 </div>
-<div class=" row titulo" style="font-size: 30px; color: grey; " align="center" ng-if = "!main.hayFixers()">
+<div class=" row titulo" style="font-size: 30px; color: grey; " align="center" ng-if = "!main.hayFixers">
   Lo sentimos, actualmente no hay un Fixer que pueda hacer esos trabajos en esa ciudad . :/
 </div>
 <div class = "row" style="height:100px;">
@@ -48,8 +48,8 @@
               </div>
               <div class = "col-md-6">
                 <div align = "left">
-                  <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#055772; color: white;" >
-                    <span  >Cotizar</span>
+                  <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#055772; color: white;"  ng-click="main.enviarCotizacionYa(fixer._id )" >
+                    <span  >Solicitar cotización</span>
                   </button>
                 </div>
               </div>

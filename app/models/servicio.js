@@ -1,17 +1,27 @@
-var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose'); // for working w/ our database
 var Schema = mongoose.Schema;
 var UserSchema    = require('./user');
 
 // schema
 var ServicioSchema = new Schema({
-tipo: { type: String, required: true, select: true },  //Limpieza, mantenimiento...
-estado: { type: String, required: true, select: true }, //Activo, terminado, en espera de confirmacion
-lugar: { type: String, required: true, select: true },   // Dirección
-cliente: UserSchema,
-ofertante: UserSchema
+  alba: Boolean,
+  carp: Boolean,
+  plom: Boolean,
+  jard: Boolean,
+  elect: Boolean,
+  pint: Boolean,
+  estado: String, // activo, enEspera, terminado, esperandoCliente
+  ciudad: String,
+  direccion: String,
+  descripcion: String,
+  trabajos:[String],
+  cliente: UserSchema,
+  ofertante: UserSchema,
+  id: Number,
+  precio:Number,
+  detalleCot: String
 });
 
 
- // return the model
+// return the model
 module.exports =  ServicioSchema;

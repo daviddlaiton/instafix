@@ -1,0 +1,260 @@
+
+<div class = "row" >
+  <div class=" row tituloBlanco" style="font-size: 50px; color: white; text-align:center;border-bottom:5px solid #8e0b0b;"   >
+    Detalles del trabajo
+  </div>
+</div>
+<div class = "row" style="height:30px;">
+</div>
+<div class = "row" >
+  <div class="col-md-4"  >
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 30px; color: white; "   >
+        Ciudad
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 20px; color: #707070;  "   >
+        {{main.servicio.ciudad}}
+      </div>
+    </div>
+
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 30px; color: white; "   >
+        Dirección
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 20px; color: #707070;  "   >
+        {{main.servicio.direccion}}
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 30px; color: white; "   >
+        Descripción
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 15px; color: #707070;  "   >
+        {{main.servicio.descripcion}}
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 30px; color: white; "   >
+        Estado del servicio
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 15px; color: #707070;  "   >
+        {{main.servicio.estado}}
+      </div>
+    </div>
+    <div class = "row" style="height:30px;">
+    </div>
+    <div class = "row" ng-if="main.servicioEnEspera">
+      <div class = "row"ng-if="!main.processing" >
+        <button type="submit" class="btn btn-premier botonCaja" style="text-align:center;   color: white;" ng-click="main.hacerCotizacion()">
+          <span>Hacer cotizacion</span>
+        </button>
+      </div>
+      <div class = "row" style="height:30px;">
+      </div>
+      <div class = "row"ng-if="!main.processing" >
+        <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#c9862e; color: white;" ng-click="main.rechazarServicio()">
+          <span>Rechazar servicio</span>
+        </button>
+      </div>
+      <div  class="row"  ng-if="main.processing">
+        <div align="center" class="col-md-12" >
+          <div  class="loader" align ="center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class = "col-md-5" >
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 40px; "   >
+        Fotos del trabajo
+      </div>
+    </div>
+    <div ng-repeat="rows in main.fotosTrabajo">
+      <div class="row">
+        <div ng-repeat="trabajo in rows">
+          <div class="col-md-5" >
+            <img ng-src ="{{trabajo}}" style="width: 200px; height: 200px;">
+          </div>
+        </div>
+      </div>
+      <div class = "row" style="height:10px;">
+      </div>
+    </div>
+  </div>
+  <div class = "col-md-3" >
+    <div class = "row"  ng-if="main.ofertante">
+      <div class=" row tituloBlanco" style="font-size: 40px; "   >
+        Cliente
+      </div>
+      <div class = "row">
+        <div class="col-md-4">
+          <img ng-src ="{{main.servicio.cliente.perfil}}" style="display: block; max-width:100%; max-height:100%; width: auto; height: auto;">
+        </div>
+        <div class="col-md-6">
+          <div class = "row">
+            <div class=" titulo" style="font-size: 25px; color: white;" align="left">
+              {{main.servicio.cliente.name}}
+            </div>
+          </div>
+
+          <div class = "row">
+            <div class ="col-md-1" ng-repeat="i in getEstrellas(main.servicio.cliente.estrellas) track by $index">
+              <span class="fa fa-star checked" style="padding-top: 1px; font-size:18px; "></span>
+            </div>
+            <div class ="col-md-1" ng-repeat="i in getNoEstrellas(main.servicio.cliente.estrellas) track by $index">
+              <span class="fa fa-star no-checked" style="padding-top: 1px; font-size:18px; "></span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class = "row" ng-if="!main.ofertante">
+      <div class=" row tituloBlanco" style="font-size: 40px; "   >
+        Fixer
+      </div>
+      <div class = "row">
+        <div class="col-md-4">
+          <img ng-src ="{{main.servicio.ofertante.perfil}}" style="display: block; max-width:100%; max-height:100%; width: auto; height: auto;">
+        </div>
+        <div class="col-md-6">
+          <div class = "row">
+            <div class=" titulo" style="font-size: 25px; color: white;" align="left">
+              {{main.servicio.ofertante.name}}
+            </div>
+          </div>
+
+          <div class = "row">
+            <div class ="col-md-1" ng-repeat="i in getEstrellas(main.servicio.ofertante.estrellas) track by $index">
+              <span class="fa fa-star checked" style="padding-top: 1px; font-size:18px; "></span>
+            </div>
+            <div class ="col-md-1" ng-repeat="i in getNoEstrellas(main.servicio.ofertante.estrellas) track by $index">
+              <span class="fa fa-star no-checked" style="padding-top: 1px; font-size:18px; "></span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class = "row" style="height:30px;">
+</div>
+<div class = "row" ng-if="main.formulario">
+  <div class = "col-md-4" >
+    <div class=" row titulo" style="font-size: 23px; color: white" align="left">
+      <label for="direccion" align = "center">
+        Precio
+      </label>
+    </div>
+    <div class="row">
+      <input type="text"   placeholder="Ingrese un precio aproximado..."  ng-model="main.servicio.precio"><br>
+    </div>
+    <div class=" row titulo" style="font-size: 23px; color: white" align="left">
+      <label for="descripcion" align = "center">
+        Descripción
+      </label>
+    </div>
+    <div class="row">
+      <textarea name="Text1" id="descripcion" cols="60" rows="5" placeholder="Describa brevemente el trabajo, incluya una duración aproximada y descripción del precio" ng-model="main.servicio.detalleCot"></textarea>
+    </div>
+    <div class = "row"style="color:red" ng-if="main.error" >
+      {{ main.error }}
+    </div>
+    <div  class="row"  ng-if="main.processing">
+      <div align="center" class="col-md-12" >
+        <div  class="loader" align ="center"></div>
+      </div>
+    </div>
+    <div class="row"  ng-if="!main.processing">
+      <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#055772; color: white;" ng-click="main.enviarCotizacion()">
+        <span  >Enviar Cotizacion</span>
+      </button>
+    </div>
+  </div>
+
+  <div class = "row" style="height:40px;">
+  </div>
+
+</div>
+<div class=" row titulo" style="font-size: 50px; color: white;   border-bottom:5px solid #878787;" align="center"  ng-if="main.servicio.estado!= 'Esperando respuesta del fixer' ">
+</div>
+<div class = "row" ng-if="main.servicio.estado!= 'Esperando respuesta del fixer' ">
+  <div class="col-md-4"  >
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 20px; color: white; "   >
+        Precio cotizado
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 15px; color: #707070;  "   >
+        {{main.servicio.precio}}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4"  >
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 20px; color: white; "   >
+        Detalle de cotización
+      </div>
+    </div>
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 15px; color: #707070;  "   >
+        {{main.servicio.detalleCot}}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4" ng-if="main.servicio.estado!= 'Activo' " >
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 40px; color: black; "   >
+        .
+      </div>
+    </div>
+    <div class = "row"ng-if="!main.processing" >
+      <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#055772; color: white;" ng-click="main.iniciarServicio()">
+        <span>¡Iniciar servicio!</span>
+      </button>
+    </div>
+    <div class = "row" style="height:30px;">
+    </div>
+    <div class = "row"ng-if="!main.processing" >
+      <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#c9862e; color: white;" ng-click="main.rechazarServicio()">
+        <span>Rechazar servicio</span>
+      </button>
+    </div>
+    <div  class="row"  ng-if="main.processing">
+      <div align="center" class="col-md-12" >
+        <div  class="loader" align ="center"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4" ng-if="main.servicio.estado== 'Activo' && !main.ofertante" >
+    <div class = "row" >
+      <div class=" row tituloBlanco" style="font-size: 40px; color: black; "   >
+        .
+      </div>
+    </div>
+    <div class = "row"ng-if="!main.processing && !main.user.ofertante" >
+      <a ng-href="/escribir-referencia/{{main.servicio.ofertante._id}}" ng-click="main.terminarServicio()">
+        <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#055772; color: white;" >
+          <span>Terminar servicio</span>
+        </button>
+      </a>
+    </div>
+    <div class = "row" style="height:30px;">
+    </div>
+    <div  class="row"  ng-if="main.processing">
+      <div align="center" class="col-md-12" >
+        <div  class="loader" align ="center"></div>
+      </div>
+    </div>
+  </div>
+</div>

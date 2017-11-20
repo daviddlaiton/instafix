@@ -51,26 +51,32 @@
       </div>
       <div class="row">
         <div class="col-md-2 titulo"  align="left">
-          <img ng-src ="{{referencia.cliente.perfil}}" style="max-width:95%; max-height:100%; width: auto; height: auto;" class = "img-circle">
+          <div class="row">
+            <img ng-src ="{{referencia.cliente.perfil}}" style="max-width:95%; max-height:100%; width: auto; height: auto;" class = "img-circle">
+          </div>
+          <div class="row">
+            <div class="col-md-2 titulo" style="font-size: 20px; color: white;" align="left">
+              {{referencia.cliente.username}}
+            </div>
+          </div>
         </div>
-        <div class="col-md-2 titulo" style="font-size: 20px; color: white;" align="left">
-          {{referencia.cliente.username}}:
-        </div>
+
+
         <div class="col-md-5 titulo" style="font-size: 20px; color: white;" align="left">
           {{referencia.texto}}
         </div>
         <div class="col-md-3 titulo" style="font-size: 20px; color: white;" align="left">
 
-        <div class = "row">
-          <div class ="col-md-1" ng-repeat="i in getEstrellas(referencia.estrellas) track by $index">
-            <span class="fa fa-star checked" style="padding-top: 1px; font-size:18px; "></span>
-          </div>
-          <div class ="col-md-1" ng-repeat="i in getNoEstrellas(referencia.estrellas) track by $index">
-            <span class="fa fa-star no-checked" style="padding-top: 1px; font-size:18px; "></span>
-          </div>
+          <div class = "row">
+            <div class ="col-md-1" ng-repeat="i in getEstrellas(referencia.estrellas) track by $index">
+              <span class="fa fa-star checked" style="padding-top: 1px; font-size:18px; "></span>
+            </div>
+            <div class ="col-md-1" ng-repeat="i in getNoEstrellas(referencia.estrellas) track by $index">
+              <span class="fa fa-star no-checked" style="padding-top: 1px; font-size:18px; "></span>
+            </div>
 
+          </div>
         </div>
-      </div>
 
 
       </div>
@@ -100,8 +106,34 @@
       <div class="col-md-3">
       </div>
 
+      <div class = "row" style="height:30px;" ng-if="!main.processing">
+      </div>
+      <div class = "row" ng-if="!main.ofertante">
+        <div class = "col-md-4">
+          <div align = "left">
+            <button type="submit" class="btn btn-premier " style="text-align:center;   background-color:#055772; color: white;" ng-click="main.enviarCotizacion()">
+              <span  >Solicitar Cotizacion</span>
+            </button>
+          </div>
+        </div>
+        <div class = "col-md-6">
+          <div align = "left">
+            <a ng-href="/nuevo-servicio/fixers" >
+              <button type="submit" class="btn btn-premier  botonCaja" style="text-align:center; color: white; width:150px" >
+                <span  >Volver</span>
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div  class="row"  ng-if="main.processing">
+        <div align="center" class="col-md-6" >
+          <div  class="loader" align ="left"></div>
+        </div>
+      </div>
       <div class = "row" style="height:30px;">
       </div>
+
     </div>
 
   </div>

@@ -71,6 +71,7 @@ angular.module('app.routes', ['ngRoute'])
 			 }]
 		 }
 	})
+
 	.when('/referenciarFixer', {
 		templateUrl: 'app/views/pages/fixersR.html',
 		controller: 'referenciaController',
@@ -86,9 +87,21 @@ angular.module('app.routes', ['ngRoute'])
 			 }]
 		 }
 	})
-
-
-
+	.when('/servicios-en-espera/', {
+		templateUrl: 'app/views/pages/servicios.html',
+		controller: 'mainController',
+		controllerAs: 'main'
+	})
+	.when('/detalle-servicio/:servicio_id', {
+		templateUrl: 'app/views/pages/servicioSingle.html',
+		controller: 'mainController',
+		controllerAs: 'main'
+	})
+	.when('/servicios-activos/', {
+		templateUrl: 'app/views/pages/serviciosActivos.html',
+		controller: 'servicioActivoController',
+		controllerAs: 'main'
+	})
 
 	;
 	// get rid of the hash in the URL

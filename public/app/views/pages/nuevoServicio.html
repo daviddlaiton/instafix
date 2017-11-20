@@ -74,14 +74,30 @@
   </div>
   <div class = "row" style="height:50px;">
   </div>
-  <div class = "row">
+  <div class = "row" style="height:50px;">
+    <div class = "col-md-9">
+  <div style="color:red" ng-if="main.error" align ='center'>
+    {{ main.error }}
+  </div>
+</div>
+</div>
+
+  <div class = "row" ng-if="!main.processing">
 
     <div class = "col-md-9">
       <div class = "tituloBlanco" align="center">
-        <button type="submit"  class = "boton-cool" style="  font-size:20px; border-top:transparent;border-left-color:transparent;border-right-color:transparent">
-          Listo
+        <button type="submit" class="btn btn-block botonCaja"  style="width : 20%"ng-if="!main.processing">
+          <span  >Listo</span>
         </button>
       </div>
+    </div>
+
+  </div>
+
+  <div  class="row"  ng-if="main.processing">
+
+    <div align="center" class="col-md-9" >
+      <div  class="loader" align ="center"></div>
     </div>
 
   </div>

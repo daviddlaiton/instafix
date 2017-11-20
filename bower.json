@@ -1,0 +1,26 @@
+{
+  "name": "node-api",
+  "description": "Cliente instafix",
+  "main": "server.js",
+  "authors": [
+    "Andrés Felipe Olivares"
+  ],
+  "license": "MIT",
+  "homepage": "www.instafix.com.co",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/assets/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-animate": "^1.6.6",
+    "angular-base64-upload": "^0.1.23",
+    "angular-route": "^1.6.6",
+    "bootstrap": "^3.3.7",
+    "ng-file-upload": "^12.2.13"
+  }
+}

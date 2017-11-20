@@ -1,62 +1,104 @@
-angular.module('servicioCtrl', ['servicioService','ngFileUpload'])
+angular.module('servicioCtrl', ['ngFileUpload'])
 
-.controller('servicioController',['$http','$route','Servicio', 'Upload','$location', '$window','Auth','$rootScope', '$scope',function($http,$route,Servicio,Upload, $location , $window,Auth,$rootScope,$scope) {
+.controller('servicioController',['User','AuthToken','Img','$http','$route','Servicio', 'Upload','$location', '$window','Auth','$rootScope', '$scope',function(User,AuthToken,Img,$http,$route,Servicio,Upload, $location , $window,Auth,$rootScope,$scope) {
 
   var vm = this;
   vm.loggedIn = Auth.isLoggedIn();
+  vm.ofertante = Auth.esOfertante();
+  vm.processing = false;
+  vm.hayFixers = $window.localStorage.getItem('fixers');
 
   // set a processing variable to show loading things
-  vm.processing = true;
   vm.seleccionarServicios= function() {
-    $location.path('nuevo-servicio/detalle');
-    $window.servicioData = vm.servicioData;
+    vm.processing = true;
+
+    if(vm.servicioData){
+      if(vm.servicioData.alba||vm.servicioData.elec||vm.servicioData.carp||vm.servicioData.jard||vm.servicioData.pint||vm.servicioData.plom){
+
+        vm.processing = false;
+        $location.path('nuevo-servicio/detalle');
+        $window.localStorage.setItem('servicioData', JSON.stringify(vm.servicioData));
+      }
+      else  {
+        vm.error = 'Seleccione al menos un servicio';
+        vm.processing = false;
+
+      }
+    }
+    else{
+      vm.processing = false;
+      vm.error = 'Seleccione al menos un servicio';
+    }
   };
   vm.solicitarServicio= function() {
-    vm.processing = true;
     if (vm.upload_form.files.$valid && vm.files) {
       vm.upload(vm.files);
-    }
+    }else vm.error = 'Imagen inválida'
   }
-  vm.upload = function (files) {
-    Upload.upload({
-      url: '/api/subirFotos', //webAPI exposed to upload the file
-      data:{files:files} //pass file as data, should be user ng-model
-    }).then(function (resp) { //upload function returns a promise
-      if(resp.data.error_code === 0){ //validate success
-        $window.alert('Exito' );
-        var result = {};
-        for(var key in $window.servicioData) result[key] = $window.servicioData[key];
-        for(var key in  vm.servicioData) result[key] =  vm.servicioData[key];
-        result.routes = resp.data.routes;
-        console.log(resp.data.routes);
-        Servicio.solicitarServicio(result)
-        .success(function(data) {
-          vm.processing = false;
-          vm.servicio = result;
-          var vac = [];
-          if($window.localStorage.getItem('fixers'))
-          $window.localStorage.removeItem('fixers') //borrar fixers
-          if(data.success){
-            $window.localStorage.setItem('fixers', JSON.stringify(data.fixers));
-          }
-          vm.servicioData = {};
-          if(Auth.isLoggedIn()){
-            $location.path('nuevo-servicio/fixers');
-          }
-          else {
-            $location.path('signUp/');
-          }
-        });
-      } else {
-        $window.alert('Ocurrio un error');
-      }
-    });
-  };
-  vm.hayFixers = function ()
-  {
-    return $window.localStorage.getItem('fixers');
+  vm.upload = function (fotos) {
+    vm.processing = true;
+    if(vm.servicioData){
+      if(Object.keys(vm.servicioData).length === 3){
+          var result = {};
+          var servicioData = JSON.parse($window.localStorage.getItem('servicioData'));
+          for(var key in servicioData) result[key] = servicioData[key];
+          for(var key in  vm.servicioData) result[key] =  vm.servicioData[key];
 
-  }
+          $window.token= AuthToken.getToken();
+          $window.ofertante = AuthToken.getOfertante();
+          var routes = [];
+          var ID = 0;
+          if (ID < fotos.length)
+          doCall(fotos[ID]);
+
+          function doCall(key) {
+            AuthToken.setToken( );
+            Img.subirFoto(key).then(function(resp){
+              routes.push(resp.data.url);
+              ID++;
+              if ( ID < fotos .length)
+              doCall(fotos[ID]);
+              else{
+                result.trabajos = routes;
+                Servicio.solicitarServicio(result)
+                .then(function(data) {
+                  AuthToken.setToken($window.token,$window.ofertante);
+                  vm.processing = false;
+                  vm.servicio = result;
+                  var vac = [];
+                  if($window.localStorage.getItem('fixers'))
+                  $window.localStorage.removeItem('fixers') //borrar fixers
+                  if(data.data.success){
+                    $window.localStorage.setItem('fixers', JSON.stringify(data.data.fixers));
+                    $window.localStorage.setItem('servicioId', data.data.servicioId);
+
+                  }
+                  vm.servicioData = {};
+                  if(Auth.isLoggedIn()){
+                    vm.processing = false;
+                    $location.path('nuevo-servicio/fixers');
+                  }
+                  else {
+                    vm.processing = false;
+                    $location.path('signUp/');
+                  }
+                });
+              }
+            });
+          }
+
+      } else{
+        vm.processing = false
+        vm.error = 'Ingrese todos los datos.';
+      }
+    }else{
+      vm.processing = false
+      vm.error = 'Ingrese los datos.';
+    }
+
+
+  };
+
   function chunk(arr, size) {
     var newArr = [];
     if(arr){
@@ -71,7 +113,7 @@ angular.module('servicioCtrl', ['servicioService','ngFileUpload'])
 
 
 
-//fixer single
+  //fixer single
   $scope.getEstrellas = function(num) {
     if(num===0)
     return new Array(3);
@@ -89,39 +131,69 @@ angular.module('servicioCtrl', ['servicioService','ngFileUpload'])
 
   if($route.current.locals.currentFixer)
   {
-  $scope.fixer = $route.current.locals.currentFixer.data;
-  $scope.trabajos = chunk($route.current.locals.currentFixer.data.trabajos.slice(0,4),2);
-}
+    $scope.fixer = $route.current.locals.currentFixer.data;
+    $scope.trabajos = chunk($route.current.locals.currentFixer.data.trabajos.slice($route.current.locals.currentFixer.data.trabajos.length-4,$route.current.locals.currentFixer.data.trabajos.length),2);
+  }
 
 
-vm.prueba2 = function()
-{
+  if($route.current.locals.currentFixer)
   $http.get('/api/referencias/'+ $route.current.locals.currentFixer.data.username).then(function(response){
-    console.log(response);
+    if(response.data.referencias)
+    if(response.data.referencias>4)
+    $scope.referencias = response.data.referencias.splice(response.data.referencias.length-4,response.data.referencias.length);
+    else
+    $scope.referencias = response.data.referencias;
   });
-}
-if($route.current.locals.currentFixer)
-$http.get('/api/referencias/'+ $route.current.locals.currentFixer.data.username).then(function(response){
-  $scope.referencias = response.data.referencias.splice(response.data.referencias.length-4,4);
-});
-vm.prueba1 = function()
-{
-  var ref = {
-    estrellas: 2,
-    fixerUsername:'af.olivares10',
-    texto:'regular',
-    cliente: {username:'d'}
-  }
-  var obj = {ref:ref, fixerId: $route.current.params.fixer_id}
-  $http.post('/api/referencias/',obj);
-}
 
-
-  vm.imprimir = function()
+  vm.enviarCotizacion = function()
   {
-    console.log( $route.current.locals);
-  }
+    vm.processing = true;
+    if($window.confirm("¿Desea solicitar cotización a "+$route.current.locals.currentFixer.data.name+"?"))
+    Auth.getUser().then(function(data){
+      Servicio.confirmarServicio({id:$window.localStorage.getItem('servicioId'), cliente:data.data, ofertante:$route.current.locals.currentFixer.data})
+      .then(function(data){
+        if(data.data.success)
+        {
+          vm.processing = false;
+          $window.alert('¡Solicitud enviada!');
+          $location.path('/inicio');
+        }
+        else
+        {
+          vm.processing = false;
+          $window.alert('Ocurrió un error');
+        }
+      });
+    });
+    vm.processing = false;
 
+  }
+  vm.enviarCotizacionYa = function(id)
+  {
+    vm.processing = true;
+    User.get(id).then(function(response){
+      if($window.confirm("¿Desea solicitar cotización a "+response.data.name+"?"))
+      Auth.getUser().then(function(data){
+        Servicio.confirmarServicio({id:$window.localStorage.getItem('servicioId'), cliente:data.data, ofertante:response.data})
+        .then(function(data2){
+          if(data2.data.success)
+          {
+            vm.processing = false;
+            $window.alert('¡Solicitud enviada!');
+            $location.path('/inicio');
+          }
+          else
+          {
+            vm.processing = false;
+            $window.alert('Ocurrió un error');
+          }
+        });
+      });
+      vm.processing = false;
+
+    });
+
+  }
 
   $rootScope.$on('$routeChangeStart', function() {
     vm.loggedIn = Auth.isLoggedIn();

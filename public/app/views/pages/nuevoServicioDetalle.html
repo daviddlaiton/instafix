@@ -19,10 +19,10 @@
       </div>
       <div class="row">
         <select  ng-model="up.servicioData.ciudad" >
-          <option value="bogota">Bogotá</option>
-          <option value="cali">Cali</option>
-          <option value="barranquilla">Barranquilla</option>
-          <option value="chia">Chía</option>
+          <option value="Bogota">Bogotá</option>
+          <option value="Cali">Cali</option>
+          <option value="Barranquilla">Barranquilla</option>
+          <option value="Chia">Chía</option>
         </select><br>
       </div>
 
@@ -47,8 +47,7 @@
         </label>
       </div>
       <div class="row">
-        <textarea name="Text1" id="descripcion" cols="60" rows="5" placeholder="Describa brevemente el trabajo..." ng-model="up.servicioData.descripcion"></textarea>
-
+        <textarea name="Text1" id="descripcion" cols="60" rows="5" placeholder="Describa brevemente el trabajo, incluya un rango de fechas de disponibilidad" ng-model="up.servicioData.descripcion"></textarea>
       </div>
       <div class = "row" style="height:0px;">
       </div>
@@ -72,13 +71,27 @@
            />
       <div class = "row" style="height:50px;">
       </div>
-      <div class=" row">
+      <div class = "row">
+        <div class = "col-md-4">
+        </div>
+        <div class = "col-md-4">
+          <div style="color:red" ng-if="up.error" align ='center'>
+            {{ up.error }}
+          </div>
+        </div>
+      </div>
+      <div class=" row" ng-if="!up.processing">
         <div class=" col-sm-4">
         </div>
         <button type="submit" class="btn btn-premier botonCaja  col-sm-4" style="text-align:center;"  ng-click="up.solicitarServicio()">
           <span  >Enviar</span>
         </button>
         <div class = "row" style="height:75px;">
+        </div>
+      </div>
+      <div  class="row"  ng-if="up.processing">
+        <div align="center" class="col-md-4" >
+          <div  class="loader" align ="center"></div>
         </div>
       </div>
     </form>

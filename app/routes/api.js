@@ -3,19 +3,14 @@ var UserSchema       = require('../models/user');
 var User = mongoose.model('User', UserSchema);
 var ReferenciaSchema       = require('../models/referencia');
 var Referencia       = mongoose.model('Referencia', ReferenciaSchema);
-
+var ServicioSchema = require('../models/servicio');
+var Servicio =  mongoose.model('Servicio', ServicioSchema);
+var IdServicioSchema = require('../models/idServicio');
+var IdServicio =  mongoose.model('IdServicio', IdServicioSchema);
 var jwt        = require('jsonwebtoken');
 var config     = require('../../config');
-var cloudinary = require('cloudinary');
-var fs = require('fs');
-cloudinary.config({
-	cloud_name: 'af-olivares10',
-	api_key: '191429111538125',
-	api_secret: 'UrRDUkMQyif7p6u7EY2wQqg17bo'
-});
 // super secret for creating tokens
 var superSecret = config.secret;
-var multer = require('multer');
 module.exports = function(app, express) {
 
 	var apiRouter = express.Router();
@@ -51,7 +46,7 @@ module.exports = function(app, express) {
 				if (err) {
 					// duplicate entry
 					if (err.code == 11000)
-					return res.json({ success: false, message: 'Ya existe un usuario con ese nombre de usuario. '});
+					return res.json({ success: false, message: 'Ya existe un usuario con ese login. '});
 					else
 					return res.send(err);
 				}
@@ -67,16 +62,14 @@ module.exports = function(app, express) {
 	//mover para que requiera token!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	apiRouter.post('/solicitarServicio',function(req, res) {
 		var servicio = req.body;
-
 		User.find(function(err, result) {
 			if (err) throw err;
 			var  i = 0;
 			var users = result.slice(0,result.length); //[];
-			//for(var key in result){ users[i] = result[i]; i++; }
-			//i = 0;
 			for(; i < result.length;i++)
 			{
 				if( !result[i].ofertante){
+					console.log('1');
 					users.splice(users.indexOf(result[i]),1);
 
 					continue;
@@ -84,32 +77,39 @@ module.exports = function(app, express) {
 				if(servicio.ciudad ){
 					if(servicio.ciudad != result[i].ciudad){
 						users.splice(users.indexOf(result[i]),1);
-
+						console.log('2');
 						continue;
 					}
 				}
 				if(servicio.alba && !result[i].alba)	{
 					users.splice(users.indexOf(result[i]),1)
+					console.log('3');
 					continue;
 				}
 				if(servicio.carp && !result[i].carp){
 					users.splice(users.indexOf(result[i]),1)
+					console.log('4');
 					continue;
 				}
 				if(servicio.elec && !result[i].elec){
 					users.splice(users.indexOf(result[i]),1)
+					console.log('5');
+
 					continue;
 				}
 				if(servicio.jard && !result[i].jard){
 					users.splice(users.indexOf(result[i]),1)
+					console.log('6');
 					continue;
 				}
 				if(servicio.pint && !result[i].pint){
 					users.splice(users.indexOf(result[i]),1)
+					console.log('7');
 					continue;
 				}
 				if(servicio.plom && !result[i].plom){
 					users.splice(users.indexOf(result[i]),1)
+					console.log('8');
 					continue;
 				}
 
@@ -122,96 +122,258 @@ module.exports = function(app, express) {
 				});
 			}
 			else if (users){
-				res.json({
-					success: true,
-					message: 'Fixers encontrados',
-					fixers: users
-				});
-			}
-		});
-	});
-	var storage = multer.diskStorage({ //multers disk storage settings
-		destination: function (req, file, cb) {
-			cb(null, __dirname+'/../../public/uploads' )
-		},
-		filename: function (req, file, cb) {
-			var datetimestamp = Date.now();
-			cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1])
-		}
-	});
-
-	var upload = multer({ //multer settings
-		storage: storage
-	}).any();
-	var uploadSingle = multer({ //multer settings
-		storage: storage
-	}).single('foto');
-	/** API path that will upload the files */
-
-	apiRouter.post('/subirFotos', function(req, res) {
-		upload(req,res,function(err){
-			if(err){
-				console.log(err);
-				res.json({error_code:1,err_desc:err});
-				return;
-			}
-			var routes = [];
-			var objectKeys = Object.keys(req.files);
-			var ID = 0;
-			if (ID < objectKeys.length)
-			doCall(objectKeys[ID]);
-
-			function doCall(key) {
-				cloudinary.uploader.upload(__dirname+'/../../public/uploads/'+req.files[ID].filename, function(result) {
-					routes.push(result.url);
-					ID++;
-					if ( ID < objectKeys.length)
-					doCall(objectKeys[ID]);
-					else {
-						req.files.forEach(function(item, index, array) {
-							fs.unlink(__dirname+'/../../public/uploads/'+item.filename, function(err) {
-								console.log(err);
-							});
-						});
-						res.json({error_code:0,err_desc:null, routes:routes});
+				IdServicio.find(function(err2, result2){
+					if(err2) throw err2;
+					var nuevoServ = new Servicio();
+					nuevoServ.alba = req.body.alba;
+					nuevoServ.carp = req.body.carp;
+					nuevoServ.elec = req.body.elec;
+					nuevoServ.jard = req.body.jard;
+					nuevoServ.pint = req.body.pint;
+					nuevoServ.plom = req.body.plom;
+					nuevoServ.ciudad = req.body.ciudad;
+					nuevoServ.descripcion = req.body.descripcion;
+					nuevoServ.direccion = req.body.direccion;
+					nuevoServ.trabajos = req.body.trabajos;
+					nuevoServ.cliente = req.body.cliente;
+					nuevoServ.precio = 0;
+					nuevoServ.detalleCot = '';
+					nuevoServ.estado = 'Esperando respuesta del fixer';
+					if(result2.length === 0) {
+						var idServicio = new IdServicio();
+						idServicio.id = 0;
+						idServicio.save(function (err3){
+							if (err3) {
+								console.log(err3);
+							}
+							else{
+								nuevoServ.id = 0;
+								nuevoServ.save(function(err4){
+									if (err4) {
+										console.log(err4);
+									}
+									else{
+										return res.json({
+											success: true,
+											message: 'Fixers encontrados',
+											fixers: users,
+											servicioId:0
+										});
+									}
+								})
+							}
+						})
+					}else{
+						var idAntiguo = result2[0];
+						idAntiguo.id = idAntiguo.id+1;
+						idAntiguo.save(function(err5){
+							if(err5){
+								console.log(err5);
+							}else{
+								nuevoServ.id = idAntiguo.id;
+								nuevoServ.save(function(err6){
+									if (err6) {
+										console.log(err6);
+									}
+									else{
+										return res.json({
+											success: true,
+											message: 'Fixers encontrados',
+											fixers: users,
+											servicioId: idAntiguo.id
+										});
+									}
+								})
+							}
+						})
 					}
-				});
+
+
+				})
+
 			}
 		});
 	});
+	apiRouter.post('/terminarServicio', function(req, res) {
+		Servicio.update({id:req.body.id}, {estado:'terminado'},function(err, numberAffected, rawResponse){
+			return	res.json({
+				success: true,
+				message: 'Servicio terminado'
+			});
+		});
 
-	apiRouter.post('/fixer/subirFotoPerfil', function(req, res) {
-		uploadSingle(req,res,function(err){
-			if(err){
-				console.log(err);
-				res.json({error_code:1,err_desc:err});
-				return;
-			}
-			cloudinary.uploader.upload(__dirname+'/../../public/uploads/'+req.file.filename, function(result) {
-				fs.unlink(__dirname+'/../../public/uploads/'+req.file.filename, function(err) {
-					console.log(err);
-				});
-				res.json({error_code:0,err_desc:null, route:result.url});
-			});
-		})
 	});
-	apiRouter.post('/fixer/FotosTrabajo', function(req, res) {
-		upload(req,res,function(err){
-			if(err){
-				console.log(err);
-				res.json({error_code:1,err_desc:err});
-				return;
-			}
-			var routes = [];
-			req.files.forEach(function(item, index, array) {
-				cloudinary.uploader.upload(__dirname+'/../../public/uploads/'+item.filename, function(result) {
-					routes.push(result.url);
-				});
+	apiRouter.post('/rechazarServicio', function(req, res) {
+		Servicio.update({id:req.body.id}, {estado:'rechazado'},function(err, numberAffected, rawResponse){
+			return	res.json({
+				success: true,
+				message: 'Servicio terminado'
 			});
-			res.json({error_code:0,err_desc:null, routes:routes});
-		})
+		});
+
 	});
 
+	apiRouter.post('/iniciarServicio', function(req, res) {
+		Servicio.update({id:req.body.id}, {estado:'Activo'},function(err, numberAffected, rawResponse){
+			return	res.json({
+				success: true,
+				message: 'Servicio activado'
+			});
+		});
+
+	});
+	apiRouter.post('/enviarCotizacion', function(req, res) {
+		Servicio.update({id:req.body.id}, {precio:req.body.precio, detalleCot:req.body.detalleCot, estado:'Esperando respuesta del cliente'},function(err, numberAffected, rawResponse){
+			return	res.json({
+				success: true,
+				message: 'Servicio confirmado'
+			});
+		});
+
+	});
+	apiRouter.post('/confirmarServicio', function(req, res) {
+		Servicio.update({id:req.body.id}, {cliente:req.body.cliente, ofertante:req.body.ofertante},function(err, numberAffected, rawResponse){
+			return	res.json({
+				success: true,
+				message: 'Cotizacion enviada'
+			});
+		});
+
+	});
+	apiRouter.get('/serviciosActivoPorOfertante/:user_id', function(req, res) {
+
+		Servicio.find(function(err,results){
+			var respuesta = [];
+			for (var i = 0; i < results.length ; i++){
+				if(results[i].ofertante)
+				if(results[i].ofertante._id === req.params.user_id && results[i].estado ==='Activo')
+					 respuesta.push(results[i]);
+			}
+			return res.json({success:true, servicios:respuesta});
+		});
+	});
+	apiRouter.get('/serviciosActivoPorCliente/:user_id', function(req, res) {
+		Servicio.find(function(err,results){
+			var respuesta = [];
+
+			for (var i = 0; i < results.length  ; i++){
+				if(results[i].cliente)
+				if(results[i].cliente._id === req.params.user_id && results[i].estado ==='Activo')
+					 respuesta.push(results[i]);
+			}
+
+			return res.json({success:true, servicios:respuesta});
+		});
+		});
+	apiRouter.get('/serviciosEsperaPorCliente/:user_id', function(req, res) {
+		Servicio.find(function(err,results){
+			var respuesta = [];
+
+			for (var i = 0; i < results.length  ; i++){
+				if(results[i].cliente)
+				if(results[i].cliente._id === req.params.user_id && results[i].estado ==='Esperando respuesta del cliente')
+					 respuesta.push(results[i]);
+			}
+
+			return res.json({success:true, servicios:respuesta});
+		});
+	});
+
+	apiRouter.get('/serviciosEsperaPorOfertante/:user_id', function(req, res) {
+
+		Servicio.find(function(err,results){
+			var respuesta = [];
+			for (var i = 0; i < results.length ; i++){
+				if(results[i].ofertante)
+				if(results[i].ofertante._id === req.params.user_id && results[i].estado ==='Esperando respuesta del fixer')
+					 respuesta.push(results[i]);
+			}
+			console.log(respuesta);
+			return res.json({success:true, servicios:respuesta});
+		});
+
+
+	});
+	apiRouter.get('/serviciosEsperaPorCliente/:user_id', function(req, res) {
+		Servicio.find(function(err,results){
+			var respuesta = [];
+
+			for (var i = 0; i < results.length  ; i++){
+				if(results[i].cliente)
+				if(results[i].cliente._id === req.params.user_id && results[i].estado ==='Esperando respuesta del cliente')
+					 respuesta.push(results[i]);
+			}
+
+			return res.json({success:true, servicios:respuesta});
+		});
+
+
+	});
+	apiRouter.get('/serviciosActivoPorOfertante/:user_id', function(req, res) {
+
+		Servicio.find(function(err,results){
+			var respuesta = [];
+			for (var i = 0; i < results.length; i++){
+				if(results[i].ofertante)
+				if(results[i].ofertante._id === req.params.user_id && results[i].estado ==='Activo')
+					 respuesta.push(results[i]);
+			}
+			return res.json({success:true, servicios:respuesta});
+		});
+
+
+	});
+	apiRouter.get('/serviciosActivoPorCliente/:user_id', function(req, res) {
+
+		Servicio.find(function(err,results){
+			var respuesta = [];
+			for (var i = 0; i < results.length ; i++){
+				if(results[i].cliente)
+				if(results[i].cliente._id === req.params.user_id && results[i].estado ==='Activo')
+					 respuesta.push(results[i]);
+			}
+			return res.json({success:true, servicios:respuesta});
+		});
+
+
+	});
+	apiRouter.get('/serviciosTerminadoPorOfertante/:user_id', function(req, res) {
+
+		Servicio.find(function(err,results){
+			var respuesta = [];
+			for (var i = 0; i < results.length ; i++){
+				if(results[i].ofertante)
+				if(results[i].ofertante._id === req.params.user_id && results[i].estado ==='terminado')
+					 respuesta.push(results[i]);
+			}
+			return res.json({success:true, servicios:respuesta});
+		});
+
+
+	});
+	apiRouter.get('/serviciosTerminadoPorCliente/:user_id', function(req, res) {
+
+		Servicio.find(function(err,results){
+			var respuesta = [];
+			for (var i = 0; i < results.length ; i++){
+				if(results[i].cliente)
+				if(results[i].cliente._id === req.params.user_id && results[i].estado ==='terminado')
+					 respuesta.push(results[i]);
+			}
+			return res.json({success:true, servicios:respuesta});
+		});
+
+
+	});
+	apiRouter.get('/servicio/:service_id', function(req, res) {
+		Servicio.findById(req.params.service_id, function(err, servicio) {
+			if (err) return res.send(err);
+
+			res.json(servicio);
+		});
+
+
+	});
 
 	// route to authenticate a user (POST http://localhost:8080/api/authenticate)
 	apiRouter.post('/authenticate', function(req, res) {
@@ -219,8 +381,7 @@ module.exports = function(app, express) {
 		// find the user
 		User.findOne({
 			username: req.body.username
-		}).select('name username password ofertante perfil').exec(function(err, user) {
-			console.log(user);
+		}).select('_id name username password ofertante perfil estrellas').exec(function(err, user) {
 			if (err) throw err;
 
 			// no user with that username was found
@@ -243,16 +404,18 @@ module.exports = function(app, express) {
 					// if user is found and password is right
 					// create a token
 					var token = jwt.sign({
+						_id: user.id,
 						name: user.name,
 						username: user.username,
-						perfil: user.perfil
+						perfil: user.perfil,
+						estrellas:user.estrellas
 					}, superSecret, {
 						expiresIn: '24h' // expires in 24 hours
 					});
 					// return the information including token as JSON
 					res.json({
 						success: true,
-						message: 'Enjoy dyour token!',
+						message: 'Enjoy your token!',
 						token: token,
 						ofertante: user.ofertante
 					});
@@ -399,31 +562,30 @@ module.exports = function(app, express) {
 
 
 
-		apiRouter.post('/referencias/', function(req, res) {
-			console.log(req.body);
-				var referencia = new Referencia();		// create a new instance of the User model
-				referencia.estrellas = req.body.ref.estrellas;  // set the users name (comes from the request)
-				referencia.fixerUsername = req.body.ref.fixerUsername;  // set the users username (comes from the request)
-				referencia.texto = req.body.ref.texto;  // set the users password (comes from the request)
-				referencia.cliente = req.body.ref.cliente;
-				referencia.save(function(err) {
-					if (err) {
-						console.log('fallo');
-						console.log(err);
-						return res.send(err);
-					}
-					User.findById(req.body.fixerId, function (err, user) {
-					  if (err) return handleError(err);
-						user.estrellas = 	parseInt( ( ( parseInt(req.body.ref.estrellas,10)+(user.estrellas*user.votos ) )/(user.votos+1)), 10)
-					  user.votos = user.votos +1;
-					  user.save(function (err, updatedUser) {
-					    if (err) return handleError(err);
-							res.json({ success: true, message: 'Referencia creada!' });
-					  });
+	apiRouter.post('/referencias/', function(req, res) {
+		var referencia = new Referencia();		// create a new instance of the User model
+		referencia.estrellas = req.body.ref.estrellas;  // set the users name (comes from the request)
+		referencia.fixerUsername = req.body.ref.fixerUsername;  // set the users username (comes from the request)
+		referencia.texto = req.body.ref.texto;  // set the users password (comes from the request)
+		referencia.cliente = req.body.ref.cliente;
+		referencia.save(function(err) {
+			if (err) {
+				console.log(err);
+				return res.send(err);
+			}else{
+				User.findById(req.body.fixerId, function (err, user) {
+					if (err) return handleError(err);
+					user.estrellas = 	parseInt( ( ( parseInt(req.body.ref.estrellas,10)+(user.estrellas*user.votos ) )/(user.votos+1)), 10)
+					user.votos = user.votos +1;
+					user.trabajos = user.trabajos.concat(req.body.trabajos);
+					user.save(function (err, updatedUser) {
+						if (err) return handleError(err);
+						res.json({ success: true, message: 'Referencia creada!' });
 					});
-				});
+				});}
+			});
 		});
 
 
-	return apiRouter;
-};
+		return apiRouter;
+	};
