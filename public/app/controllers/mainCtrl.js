@@ -65,7 +65,9 @@ angular.module('mainCtrl', ['ngFileUpload'])
       });
     }
   }
-
+  vm.bajar = function(){
+    window.scrollBy(0, 1000);
+  }
   // function to handle login form
   vm.doLogin = function() {
     vm.processing = true;
