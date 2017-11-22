@@ -72,17 +72,18 @@
 </div>
 <div class = "row" style="height:50px;">
 </div>
-<div class = "row">
+<div class = "row"  ng-if="!main.loggedIn">
 	<div align="center">
-		<button type="submit" class="btn btn-premier "  style="text-align:center;   background-color:#055772; color: white;"  ng-click="main.bajar()" >
+		<button type="submit" class="btn btn-premier "  style="text-align:center;   background-color:#055772; color: white;"  ng-click="gotoElement('info')" >
 			<span  >¡Más información!</span>
 		</button>
 	</div>
 </div>
-
+<div class = "row" style="height:150px;">
+</div>
+<div id="info">
 <div ng-if="!main.loggedIn">
-	<div class = "row" style="height:150px;">
-	</div>
+
 	<div class = "col-md-6" style="height:150px;">
 		<div class="row">
 			<h1 style ="color: #ffffff; text-align:center;" class = "tituloBlanco">¿Quiénes somos?</h1>
@@ -143,3 +144,4 @@
 <div class = "row" style="height:50px;">
 </div>
 .
+</div>
